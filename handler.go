@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -114,16 +113,11 @@ func hgetall(args []Value) Value {
 		return Value{typ: "null"}
 	}
 
-	fmt.Println(value)
-	var result string
-	for key, value := range value {
-		result += key + ":" + value + "; "
+	values := []Value{}
+	for k, v := range value {
+		values = append(values, Value{typ: "bulk", bulk: k})
+		values = append(values, Value{typ: "bulk", bulk: v})
 	}
 
-	// Optionally, trim the last semicolon
-	if len(result) > 0 {
-		result = result[:len(result)-1]
-	}
-
-	return Value{typ: "bulk", bulk: result}
+	return Value{typ: "array", array: values}
 }
